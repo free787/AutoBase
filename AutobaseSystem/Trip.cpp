@@ -4,11 +4,23 @@
 
 using namespace std;
 
+Route::Route() : path_("Unknown"), distance_km_(0) {}
+Route::Route(string path, double distance) : path_(path), distance_km_(distance) {}
+string Route::GetRouteInfo() const { return path_ + " (" + to_string(distance_km_) + " км)"; }
+
 Trip::Trip() : trip_type_("Вантажний"), distance_km_(0), route_description_("База"), driver_name_("Немає"), is_completed(false), duration_hours(0), stop_count(0) {}
 
+// [Лаб 3, П. 13] Ініціалізація композиції (Route) в конструкторі
 Trip::Trip(string type, double dist, string route, string driver, Car car, bool completed, int duration, int stops)
-    : trip_type_(type), distance_km_(dist), route_description_(route), driver_name_(driver), assigned_car_(car), is_completed(completed), duration_hours(duration), stop_count(stops) {}
+    : trip_type_(type), distance_km_(dist), route_description_(route), driver_name_(driver), assigned_car_(car), is_completed(completed), duration_hours(duration), stop_count(stops), detailed_route_(route, dist) {}
 
+Trip::~Trip() {}
+
+void Trip::ShowCompositionInfo() const {
+    cout << "Деталі маршруту (Композиція): " << detailed_route_.GetRouteInfo() << "\n";
+}
+
+// === ЗБЕРЕЖЕНІ МЕТОДИ З ЛАБ 2 (РОЗГОРНУТІ) ===
 void Trip::StartTrip() {
     cout << "Рейс " << route_description_ << " почався. Водій: " << driver_name_ << ".\n";
 }
@@ -18,15 +30,18 @@ void Trip::StartTrip(string dispatcher_note) {
     cout << "Нотатка диспетчера: " << dispatcher_note << "\n";
 }
 
-void Trip::CompleteTrip() {
+void Trip::CompleteTrip(Car& car) {
     is_completed = true;
-    // 10. Взаємодія двох об'єктів
-    assigned_car_.current_mileage += distance_km_;
-    cout << "Рейс виконано. Додано " << distance_km_ << " км до пробігу.\n";
+    car.current_mileage += distance_km_;
+    car.fuel_level -= (distance_km_ * 0.3); // Витрата 30л на 100км
+    car.current_location = "Кінцева точка маршруту";
+    cout << "Рейс виконано. Дані автомобіля оновлено:\n"
+        << " - Новий пробіг: " << car.current_mileage << " км\n"
+        << " - Залишок пального: " << car.fuel_level << " л.\n";
 }
 
-void Trip::CompleteTrip(string driver_report) {
-    CompleteTrip();
+void Trip::CompleteTrip(Car& car, string driver_report) {
+    CompleteTrip(car);
     cout << "Звіт водія: " << driver_report << "\n";
 }
 
