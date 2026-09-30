@@ -1,17 +1,17 @@
 #ifndef CAR_H_
 #define CAR_H_
 
+#include "Vehicle.h"
 #include <string>
 
-class Car {
+// [Лаб 4, П. 1] Просте наслідування (Car розширює Vehicle)
+class Car : public Vehicle {
 private:
-	std::string brand_;
-	std::string plate_number_;
-	double fuel_capacity_;
 	bool needs_repair_;
-	int year_built_;
+	double max_load_capacity_;
+	bool is_loaded_;
+	std::string cargo_type_;
 
-	// [Лаб 3, П. 4] Статичне поле класу
 	static int total_cars_in_fleet_;
 
 public:
@@ -19,31 +19,29 @@ public:
 	double fuel_level;
 	std::string current_location;
 
-	// [Лаб 3, П. 1] Конструктор без параметрів
-	Car();
-	// Конструктор з параметрами (збережений з Лаб 2)
-	Car(std::string brand, std::string plate, double capacity, bool repair, int year, int mileage, double fuel, std::string location);
-	// [Лаб 3, П. 1] Конструктор копіювання
-	Car(const Car& other);
+	// [Лаб 4, П. 6] Доступ до protected членів бази через using
+	using Vehicle::fuel_capacity_;
+	using Vehicle::PerformMaintenance;
 
-	// [Лаб 3, П. 3] Деструктор
+	Car();
+	Car(std::string brand, std::string plate, double capacity, bool repair, int year, int mileage, double fuel, std::string location);
+	Car(const Car& other);
 	~Car();
 
-	// [Лаб 3, П. 4] Статичний метод
 	static void ShowTotalFleetCount();
 
-	// Методи з Лаб 2
 	void Refuel(double amount);
 	void Refuel(double amount, bool fill_full_tank);
 	void RequestRepair();
 	void RequestRepair(std::string reason);
 	Car GetClone();
 	void CopyDataFrom(Car other_car);
-	void SaveToFile(std::string filename);
-	void LoadFromFile(std::string filename);
 	void GenerateAndSortRouteDistances();
 
-	std::string GetBrand() const { return brand_; }
+	// [Лаб 4, П. 6] Демонстрація оператора глобального доступу ::
+	void CustomEngineStart();
+
+	std::string GetBrand() const { return brand_; } // Доступно, бо brand_ public в Vehicle
 	double GetFuelLevel() const { return fuel_level; }
 	void SetFuelLevel(double fuel) { fuel_level = fuel; }
 };

@@ -1,5 +1,7 @@
 #include <iostream>
+#include "Vehicle.h"          // Додано для Лаб 4
 #include "Car.h"
+#include "AdvancedVehicles.h" // Додано для Лаб 4
 #include "Driver.h"
 #include "Trip.h"
 #include "Management.h"
@@ -32,6 +34,7 @@ int main() {
     cout << "=== ЛАБОРАТОРНІ РОБОТИ 2 ТА 3: СИСТЕМА АВТОБАЗА ===\n\n";
 
     // --- БЛОК З ЛАБ 2 (СТАРА ДЕМОНСТРАЦІЯ АВТОПАРКУ) ---
+    // [Лаб 3, П. 9] Розміщення об'єктів у статичній пам'яті (статичний масив)
     Car fleet[5] = {
         Car("DAF XF 105", "BX 4921 CE", 800.0, false, 2017, 540000, 320.5, "Хмельницький"),
         Car("MAN TGX 18.440", "BX 7390 HT", 900.0, false, 2019, 410000, 450.0, "Тернопіль"),
@@ -40,6 +43,7 @@ int main() {
         Car("Scania R500", "BX 8831 OK", 1000.0, false, 2021, 150000, 890.0, "Львів")
     };
 
+    // [Лаб 3, П. 9] Розміщення об'єктів у динамічній пам'яті (динамічний масив)
     Car* extra_cars = new Car[5];
     extra_cars[0] = Car("Renault Magnum", "BX 2944 TA", 750.0, false, 2012, 920000, 200.0, "Вінниця");
 
@@ -53,6 +57,7 @@ int main() {
     }
 
     cout << "\n[Лаб 2] Покажчики:\n";
+    // [Лаб 3, П. 9] Визначення покажчика на екземпляр класу
     Car* active_truck = &fleet[0];
     cout << "Пробіг обраної фури через покажчик: " << active_truck->current_mileage << " км.\n";
 
@@ -82,8 +87,13 @@ int main() {
 
     // [Лаб 3, П. 8] Три способи створення об'єктів
     cout << "[Пункт 8] Створення об'єктів трьома способами:\n";
+    // [Лаб 3, П. 10] Демонстрація роботи конструктора без параметрів
     Car car1;                               // 1. Простий
+
+    // [Лаб 3, П. 10] Демонстрація роботи конструктора з параметрами
     Car car2 = Car("DAF XF", "BX 1111", 500, false, 2020, 1000, 200, "База"); // 2. Явний
+
+    // [Лаб 3, П. 9] Розміщення одиничного екземпляра класу в динамічній пам'яті
     Car* car3 = new Car("MAN TGX", "BX 2222", 500, false, 2020, 1000, 200, "База"); // 3. Скорочений
 
     cout << "\n";
@@ -93,7 +103,10 @@ int main() {
     cout << "\n";
     // [Лаб 3, П. 5, 6, 7] Виклик зовнішніх функцій
     cout << "[Пункт 5, 6, 7] Зовнішні функції:\n";
+
+    // [Лаб 3, П. 10] Демонстрація роботи конструктора копіювання
     CalculateFuelExternal(car2, 150.0);
+
     CalculateFuelExternal(&car2, 250.0);
     Car upgraded_car = UpgradeCarExternally(car2);
 
@@ -106,14 +119,43 @@ int main() {
     // [Лаб 3, П. 11, 12] Агрегація та Асоціація
     cout << "[Пункт 11, 12] Агрегація та Асоціація (Диспетчер, Водій, Авто):\n";
     double driver_rate = 1.5;
-    Driver drv1("Іванов О.", 77492, driver_rate); // Використання констант і посилань (П.2)
+    Driver drv1("Іванов О.", 77492, driver_rate);
     Dispatcher disp("Петренко");
 
-    disp.AssignCarToFleet(&car2); // Агрегація
+    disp.AssignCarToFleet(&car2);
 
-    TripAssignment assignment(&disp, &drv1, &car2); // Асоціація
+    TripAssignment assignment(&disp, &drv1, &car2);
     assignment.PrintAssignmentInfo();
 
+
+    // =========================================================
+    // --- НОВИЙ БЛОК З ЛАБ 4 (СПАДКУВАННЯ ТА ІЄРАРХІЯ) ---
+    // =========================================================
+    cout << "\n\n=== ЛАБОРАТОРНА РОБОТА 4: СПАДКУВАННЯ ТА ІЄРАРХІЯ ===\n\n";
+
+    // [Лаб 4, П. 7] Порядок виклику конструкторів/деструкторів простого наслідування
+    cout << "--- 1. ПРОСТЕ НАСЛІДУВАННЯ (Vehicle -> Car) ---\n";
+    {
+        Car standard_truck("Volvo FH", "BX 1234", 800, false, 2020, 1000, 500, "База");
+        standard_truck.DisplayVehicleInfo(); // Виклик методу з базового класу
+        standard_truck.CustomEngineStart();  // Демонстрація оператора :: 
+        // standard_truck.PerformMaintenance(); // Метод protected доступний через using у Car.h
+    } // Тут спрацюють деструктори: спочатку Car, потім Vehicle
+
+    cout << "\n--- 2. ЗАКРИТЕ НАСЛІДУВАННЯ (Private) ---\n";
+    {
+        TowTruck rescuer("Scania", 5000);
+        // rescuer.StartEngine(); // ПОМИЛКА! Недоступно ззовні, бо наслідування private.
+        rescuer.ExecuteTowing();  // Але доступно через власний публічний метод
+    }
+
+    cout << "\n--- 3. МНОЖИННЕ НАСЛІДУВАННЯ ---\n";
+    {
+        RefrigeratedTruck ice_truck("MAN Cool", "BX 9999");
+        ice_truck.StartColdDelivery();
+    } // Порядок деструкторів: RefrigeratedTruck -> RefrigerationUnit -> GPSDevice -> Car -> Vehicle
+
+    // Очищення пам'яті
     delete[] extra_cars;
     delete car3;
 

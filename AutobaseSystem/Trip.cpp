@@ -20,7 +20,7 @@ void Trip::ShowCompositionInfo() const {
     cout << "Деталі маршруту (Композиція): " << detailed_route_.GetRouteInfo() << "\n";
 }
 
-// === ЗБЕРЕЖЕНІ МЕТОДИ З ЛАБ 2 (РОЗГОРНУТІ) ===
+// === ЗБЕРЕЖЕНІ МЕТОДИ З ЛАБ 2 ===
 void Trip::StartTrip() {
     cout << "Рейс " << route_description_ << " почався. Водій: " << driver_name_ << ".\n";
 }
