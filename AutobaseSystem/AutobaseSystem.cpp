@@ -1,7 +1,9 @@
 #include <iostream>
-#include "Vehicle.h"          // Додано для Лаб 4
+#include <string>
+#include "Vehicle.h"
 #include "Car.h"
-#include "AdvancedVehicles.h" // Додано для Лаб 4
+#include "AdvancedVehicles.h"
+#include "ServiceFunctions.h"
 #include "Driver.h"
 #include "Trip.h"
 #include "Management.h"
@@ -27,138 +29,139 @@ Car UpgradeCarExternally(Car original) {
     return original;
 }
 
-int main() {
-    system("chcp 65001 > nul");
-    srand(time(0));
+// Демонстрація Лаб 2, 3, 4 (Повністю збережено з коментарями)
+void RunOldLabsDemo() {
+    cout << "\n=== ЗАПУСК ДЕМОНСТРАЦІЇ ЛАБОРАТОРНИХ 2, 3 ТА 4 ===\n";
 
-    cout << "=== ЛАБОРАТОРНІ РОБОТИ 2 ТА 3: СИСТЕМА АВТОБАЗА ===\n\n";
-
-    // --- БЛОК З ЛАБ 2 (СТАРА ДЕМОНСТРАЦІЯ АВТОПАРКУ) ---
     // [Лаб 3, П. 9] Розміщення об'єктів у статичній пам'яті (статичний масив)
-    Car fleet[5] = {
+    Car fleet[3] = {
         Car("DAF XF 105", "BX 4921 CE", 800.0, false, 2017, 540000, 320.5, "Хмельницький"),
         Car("MAN TGX 18.440", "BX 7390 HT", 900.0, false, 2019, 410000, 450.0, "Тернопіль"),
-        Car("Volvo FH16", "BX 1204 MK", 850.0, true, 2015, 780000, 100.0, "СТО Хмельницький"),
-        Car("Mercedes-Benz Actros", "BX 5582 PI", 800.0, false, 2020, 290000, 750.0, "Київ"),
-        Car("Scania R500", "BX 8831 OK", 1000.0, false, 2021, 150000, 890.0, "Львів")
+        Car("Volvo FH16", "BX 1204 MK", 850.0, false, 2015, 780000, 100.0, "СТО Хмельницький")
     };
 
-    // [Лаб 3, П. 9] Розміщення об'єктів у динамічній пам'яті (динамічний масив)
-    Car* extra_cars = new Car[5];
-    extra_cars[0] = Car("Renault Magnum", "BX 2944 TA", 750.0, false, 2012, 920000, 200.0, "Вінниця");
+    // [Лаб 3, П. 13] Композиція Маршруту в Рейсі
+    Trip morning_trip("Міжміський", 320.0, "Хмельницький - Київ", "Іванов О.", fleet[0], false, 5, 2);
+    morning_trip.ShowCompositionInfo();
 
-    Trip morning_trips[3];
-    Trip evening_trips[2];
-
-    cout << "[Лаб 2] Робота з масивами об'єктів:\n";
-    for (int i = 0; i < 3; i++) {
-        morning_trips[i] = Trip("Міжміський", 320 + (i * 45), "Хмельницький - Київ", "Іванов О.", fleet[i], false, 5, 2);
-        cout << "Рейс " << i + 1 << " додано в розклад.\n";
-    }
-
-    cout << "\n[Лаб 2] Покажчики:\n";
-    // [Лаб 3, П. 9] Визначення покажчика на екземпляр класу
-    Car* active_truck = &fleet[0];
-    cout << "Пробіг обраної фури через покажчик: " << active_truck->current_mileage << " км.\n";
-
-    cout << "\n[Лаб 2] Демонстрація методів:\n";
-    active_truck->Refuel(150.0);
-    active_truck->Refuel(0.0, true);
-    fleet[2].RequestRepair("Проблема з пневмопідвіскою");
-
-    Car backup_truck = active_truck->GetClone();
-    extra_cars[1].CopyDataFrom(backup_truck);
-
-    morning_trips[0].StartTrip();
-    morning_trips[1].StartTrip("Обережно, туман на трасі.");
-
-    Trip detour = morning_trips[1].GetAlternativeTrip();
-    evening_trips[0].MergeWithTrip(detour);
-
-    cout << "\n[Лаб 2] Взаємодія об'єктів (завершення рейсу):\n";
-    morning_trips[0].CompleteTrip(*active_truck, "Все добре, розвантажились.");
-
-    cout << "\n[Лаб 2] Робота з пам'яттю (множина значень):\n";
-    active_truck->GenerateAndSortRouteDistances();
-
-
-    // --- НОВИЙ БЛОК З ЛАБ 3 ---
-    cout << "\n\n=== ФУНКЦІОНАЛ ЛАБОРАТОРНОЇ 3 ===\n\n";
-
-    // [Лаб 3, П. 8] Три способи створення об'єктів
-    cout << "[Пункт 8] Створення об'єктів трьома способами:\n";
-    // [Лаб 3, П. 10] Демонстрація роботи конструктора без параметрів
-    Car car1;                               // 1. Простий
-
-    // [Лаб 3, П. 10] Демонстрація роботи конструктора з параметрами
-    Car car2 = Car("DAF XF", "BX 1111", 500, false, 2020, 1000, 200, "База"); // 2. Явний
-
-    // [Лаб 3, П. 9] Розміщення одиничного екземпляра класу в динамічній пам'яті
-    Car* car3 = new Car("MAN TGX", "BX 2222", 500, false, 2020, 1000, 200, "База"); // 3. Скорочений
-
-    cout << "\n";
-    // [Лаб 3, П. 4] Метод класу через оголошення його як статичного
-    Car::ShowTotalFleetCount();
-
-    cout << "\n";
-    // [Лаб 3, П. 5, 6, 7] Виклик зовнішніх функцій
-    cout << "[Пункт 5, 6, 7] Зовнішні функції:\n";
-
-    // [Лаб 3, П. 10] Демонстрація роботи конструктора копіювання
-    CalculateFuelExternal(car2, 150.0);
-
-    CalculateFuelExternal(&car2, 250.0);
-    Car upgraded_car = UpgradeCarExternally(car2);
-
-    cout << "\n";
-    // [Лаб 3, П. 13] Композиція 
-    cout << "[Пункт 13] Композиція Маршруту в Рейсі:\n";
-    morning_trips[0].ShowCompositionInfo();
-
-    cout << "\n";
     // [Лаб 3, П. 11, 12] Агрегація та Асоціація
-    cout << "[Пункт 11, 12] Агрегація та Асоціація (Диспетчер, Водій, Авто):\n";
-    double driver_rate = 1.5;
-    Driver drv1("Іванов О.", 77492, driver_rate);
+    double rate = 1.5;
+    Driver drv1("Іванов О.", 77492, rate);
     Dispatcher disp("Петренко");
-
-    disp.AssignCarToFleet(&car2);
-
-    TripAssignment assignment(&disp, &drv1, &car2);
+    disp.AssignCarToFleet(&fleet[0]);
+    TripAssignment assignment(&disp, &drv1, &fleet[0]);
     assignment.PrintAssignmentInfo();
 
+    CalculateFuelExternal(fleet[1], 150.0);
 
-    // =========================================================
-    // --- НОВИЙ БЛОК З ЛАБ 4 (СПАДКУВАННЯ ТА ІЄРАРХІЯ) ---
-    // =========================================================
-    cout << "\n\n=== ЛАБОРАТОРНА РОБОТА 4: СПАДКУВАННЯ ТА ІЄРАРХІЯ ===\n\n";
-
-    // [Лаб 4, П. 7] Порядок виклику конструкторів/деструкторів простого наслідування
-    cout << "--- 1. ПРОСТЕ НАСЛІДУВАННЯ (Vehicle -> Car) ---\n";
-    {
-        Car standard_truck("Volvo FH", "BX 1234", 800, false, 2020, 1000, 500, "База");
-        standard_truck.DisplayVehicleInfo(); // Виклик методу з базового класу
-        standard_truck.CustomEngineStart();  // Демонстрація оператора :: 
-        // standard_truck.PerformMaintenance(); // Метод protected доступний через using у Car.h
-    } // Тут спрацюють деструктори: спочатку Car, потім Vehicle
-
-    cout << "\n--- 2. ЗАКРИТЕ НАСЛІДУВАННЯ (Private) ---\n";
+    cout << "\n--- ЗАКРИТЕ НАСЛІДУВАННЯ (Private) [Лаб 4, П. 3, 8] ---\n";
     {
         TowTruck rescuer("Scania", 5000);
-        // rescuer.StartEngine(); // ПОМИЛКА! Недоступно ззовні, бо наслідування private.
-        rescuer.ExecuteTowing();  // Але доступно через власний публічний метод
+        rescuer.ExecuteTowing();
     }
 
-    cout << "\n--- 3. МНОЖИННЕ НАСЛІДУВАННЯ ---\n";
-    {
-        RefrigeratedTruck ice_truck("MAN Cool", "BX 9999");
-        ice_truck.StartColdDelivery();
-    } // Порядок деструкторів: RefrigeratedTruck -> RefrigerationUnit -> GPSDevice -> Car -> Vehicle
+    cout << "=== ДЕМОНСТРАЦІЮ ЗАВЕРШЕНО ===\n\n";
+}
 
-    // Очищення пам'яті
-    delete[] extra_cars;
-    delete car3;
+// [Лаб 5, П. 7] Ім'я створюваного файлу є параметром командного рядка (argc, argv)
+int main(int argc, char* argv[]) {
+    system("chcp 65001 > nul");
 
-    cout << "\nПрограма завершена.\n";
+    string filename = "default_data.txt";
+    if (argc > 1) {
+        filename = argv[1];
+        cout << "Використовується файл з командного рядка: " << filename << "\n";
+    }
+    else {
+        cout << "Параметр файлу не задано. Використовується стандартний: " << filename << "\n";
+    }
+
+    Vehicle* active_vehicle = nullptr; // Вказівник для поліморфізму
+    int choice = -1;
+
+    // [Лаб 5, П. 8] Можливість вибору створення та знищення об'єкта засобами меню
+    while (choice != 0) {
+        cout << "\n=== МЕНЮ СИСТЕМИ (ЛАБ 5) ===\n";
+        cout << "1. Створити об'єкт Car (Вантажівка)\n";
+        cout << "2. Створити об'єкт RefrigeratedTruck (Множинне наслідування)\n";
+        cout << "3. Знищити поточний об'єкт\n";
+        cout << "4. [Поліморфізм] Зміна форми та виклик методів (П. 9, 10, 11)\n";
+        cout << "5. [Масиви] Тестування статичних/динамічних масивів по 5 шт (П. 5, 6)\n";
+        cout << "6. [Файли] Робота з файлом через Service (П. 7)\n";
+        cout << "7. ЗАПУСТИТИ КОД СТАРИХ ЛАБОРАТОРНИХ (2, 3, 4)\n";
+        cout << "0. Вихід\n";
+        cout << "Ваш вибір: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            if (active_vehicle) delete active_vehicle;
+            active_vehicle = new Car("MAN", "BX1111", 500, false, 2020, 1000, 200, "База");
+            cout << "Вантажівку створено.\n";
+            break;
+        case 2:
+            if (active_vehicle) delete active_vehicle;
+            active_vehicle = new RefrigeratedTruck("Volvo Ice", "BX2222");
+            cout << "Рефрижератор створено.\n";
+            break;
+        case 3:
+            if (active_vehicle) {
+                delete active_vehicle;
+                active_vehicle = nullptr;
+                cout << "Об'єкт знищено.\n";
+            }
+            else cout << "Немає об'єкта для знищення.\n";
+            break;
+        case 4:
+            if (active_vehicle) {
+                // [Лаб 5, П. 10] Пізнє зв'язування
+                cout << "\n--- Пізнє (динамічне) зв'язування ---\n";
+                active_vehicle->PrintType();
+
+                // [Лаб 5, П. 11] Обхід віртуальності / Раннє зв'язування
+                cout << "\n--- Раннє (статичне) зв'язування / Обхід віртуальності (П. 11) ---\n";
+                active_vehicle->Vehicle::PrintType();
+
+                // [Лаб 5, П. 9] Зміна форми об'єкта із застосуванням принципу поліморфізму
+                cout << "\n--- Зміна форми об'єкта (П. 9) ---\n";
+                Vehicle* temp = new Car("Фура", "АА0000", 500, false, 2010, 1000, 300, "Київ");
+                temp->PerformWork();
+                delete temp;
+                temp = new RefrigeratedTruck("Реф-Змінний", "ВВ1111");
+                temp->PerformWork();
+                delete temp;
+            }
+            else cout << "Створіть об'єкт (Пункт 1 або 2)!\n";
+            break;
+        case 5: {
+            // [Лаб 5, П. 5, 6] 2 типи об'єктів по 5, відловлювання помилок
+            cout << "\n--- Статичний масив (5 шт) ---\n";
+            Car stat_fleet[5];
+            int s_size = 5;
+            stat_fleet[0].fuel_level = 50; stat_fleet[1].fuel_level = 150;
+            Service_Static(stat_fleet, s_size, 100.0);
+
+            cout << "\n--- Динамічний масив (5 шт) ---\n";
+            Car** dyn_fleet = new Car * [5];
+            for (int i = 0; i < 5; i++) dyn_fleet[i] = new Car();
+            int d_size = 5;
+            dyn_fleet[0]->fuel_level = 30; dyn_fleet[1]->fuel_level = 200;
+            Service_Dynamic(dyn_fleet, d_size, 100.0);
+
+            for (int i = 0; i < d_size; i++) delete dyn_fleet[i];
+            delete[] dyn_fleet;
+            break;
+        }
+        case 6:
+            if (active_vehicle) Service(active_vehicle, filename);
+            else cout << "Створіть об'єкт!\n";
+            break;
+        case 7:
+            RunOldLabsDemo(); // Виклик всього старого коду!
+            break;
+        }
+    }
+
+    if (active_vehicle) delete active_vehicle;
     return 0;
 }

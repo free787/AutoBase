@@ -36,6 +36,20 @@ Car::~Car() {
     cout << "[Car Деструктор] Видалено вантажівку.\n";
 }
 
+// [Лаб 5, П. 4] РЕАЛІЗАЦІЯ ВІРТУАЛЬНИХ МЕТОДІВ
+void Car::PerformWork() { cout << brand_ << " виконує перевезення вантажу.\n"; }
+
+void Car::WriteToFile(ofstream& out) const {
+    out << brand_ << "\n" << plate_number_ << "\n" << fuel_level << "\n";
+}
+
+void Car::ReadFromFile(ifstream& in) {
+    getline(in, brand_);
+    getline(in, plate_number_);
+    in >> fuel_level;
+    in.ignore();
+}
+
 void Car::CustomEngineStart() {
     // [Лаб 4, П. 6] Доступ до методу базового класу через оператор ::
     cout << "Перевірка систем вантажівки... ";

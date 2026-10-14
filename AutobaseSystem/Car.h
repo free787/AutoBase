@@ -5,8 +5,9 @@
 #include <string>
 
 // [Лаб 4, П. 1] Просте наслідування (Car розширює Vehicle)
-class Car : public Vehicle {
-private:
+// [Лаб 5, П. 2] ВІРТУАЛЬНЕ НАСЛІДУВАННЯ
+class Car : virtual public Vehicle {
+protected:
 	bool needs_repair_;
 	double max_load_capacity_;
 	bool is_loaded_;
@@ -26,10 +27,19 @@ public:
 	Car();
 	Car(std::string brand, std::string plate, double capacity, bool repair, int year, int mileage, double fuel, std::string location);
 	Car(const Car& other);
-	~Car();
+
+	// [Лаб 5, П. 3] Перевизначений віртуальний деструктор
+	~Car() override;
+
+	// [Лаб 5, П. 4] Перевизначення чисто віртуальних функцій
+	void PerformWork() override;
+	void WriteToFile(std::ofstream& out) const override;
+	void ReadFromFile(std::ifstream& in) override;
+
+	// [Лаб 5, П. 10] Поліморфізм
+	void PrintType() const override { std::cout << "Тип: Car (Вантажівка)\n"; }
 
 	static void ShowTotalFleetCount();
-
 	void Refuel(double amount);
 	void Refuel(double amount, bool fill_full_tank);
 	void RequestRepair();
@@ -41,7 +51,7 @@ public:
 	// [Лаб 4, П. 6] Демонстрація оператора глобального доступу ::
 	void CustomEngineStart();
 
-	std::string GetBrand() const { return brand_; } // Доступно, бо brand_ public в Vehicle
+	std::string GetBrand() const { return brand_; }
 	double GetFuelLevel() const { return fuel_level; }
 	void SetFuelLevel(double fuel) { fuel_level = fuel; }
 };

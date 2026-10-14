@@ -4,6 +4,7 @@
 #include "Vehicle.h"
 #include "Car.h"
 #include <iostream>
+#include <fstream>
 
 // ==========================================
 // [Лаб 4, П. 3] Закритий спосіб наслідування
@@ -14,9 +15,14 @@ private:
 	bool is_towing_;
 public:
 	TowTruck(std::string brand, double crane_cap);
-	~TowTruck();
+	~TowTruck() override;
 	// Оперування методами різних класів ієрархії
 	void ExecuteTowing();
+
+	// [Лаб 5] Реалізація чисто віртуальних функцій для компіляції
+	void PerformWork() override { std::cout << "Евакуатор транспортує пошкоджене авто.\n"; }
+	void WriteToFile(std::ofstream& out) const override { out << brand_ << "\n"; }
+	void ReadFromFile(std::ifstream& in) override {}
 };
 
 // ==========================================
@@ -28,7 +34,7 @@ protected:
 	std::string coordinates_;
 public:
 	GPSDevice();
-	~GPSDevice();
+	virtual ~GPSDevice();
 	void PingLocation();
 };
 
@@ -38,7 +44,7 @@ protected:
 	double temperature_;
 public:
 	RefrigerationUnit();
-	~RefrigerationUnit();
+	virtual ~RefrigerationUnit();
 	void SetTemperature(double temp);
 };
 
@@ -46,8 +52,13 @@ public:
 class RefrigeratedTruck : public Car, public GPSDevice, public RefrigerationUnit {
 public:
 	RefrigeratedTruck(std::string brand, std::string plate);
-	~RefrigeratedTruck();
+	~RefrigeratedTruck() override;
+
 	void StartColdDelivery();
+
+	// [Лаб 5, П. 4] Віртуальні функції
+	void PerformWork() override { std::cout << "Рефрижератор везе заморожені продукти.\n"; }
+	void PrintType() const override { std::cout << "Тип: RefrigeratedTruck (Множинне наслідування)\n"; }
 };
 
 #endif
