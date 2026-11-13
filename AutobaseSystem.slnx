@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="AutobaseSystem/AutobaseSystem.vcxproj" Id="784c8ae1-193f-4d43-bcce-2cc5dd79a9e4" />
+</Solution>

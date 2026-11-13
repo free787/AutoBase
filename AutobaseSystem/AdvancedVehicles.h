@@ -1,64 +1,75 @@
 #ifndef ADVANCED_VEHICLES_H_
 #define ADVANCED_VEHICLES_H_
 
-#include "Vehicle.h"
+#include <string>
+
 #include "Car.h"
-#include <iostream>
-#include <fstream>
+#include "Vehicle.h"
 
-// ==========================================
-// [Лаб 4, П. 3] Закритий спосіб наслідування
-// ==========================================
+// Лаб 4, п. 3: закрите наслідування (евакуатор)
 class TowTruck : private Vehicle {
+public:
+    TowTruck(std::string brand, double crane_capacity);
+    ~TowTruck() override;
+    void ExecuteTowing();
+
+    // Лаб 5, п. 1: реалізація чисто віртуальних функцій
+    void PerformWork() override;
+    std::string GetTypeName() const override;
+
 private:
-	double crane_capacity_;
-	bool is_towing_;
-public:
-	TowTruck(std::string brand, double crane_cap);
-	~TowTruck() override;
-	// Оперування методами різних класів ієрархії
-	void ExecuteTowing();
-
-	// [Лаб 5] Реалізація чисто віртуальних функцій для компіляції
-	void PerformWork() override { std::cout << "Евакуатор транспортує пошкоджене авто.\n"; }
-	void WriteToFile(std::ofstream& out) const override { out << brand_ << "\n"; }
-	void ReadFromFile(std::ifstream& in) override {}
+    double crane_capacity_;
 };
 
-// ==========================================
-// [Лаб 4, П. 4] Множинне наслідування (3 нових класи)
-// ==========================================
-// Клас 1: GPS Модуль
+// Лаб 4, п. 4: GPS-модуль
 class GPSDevice {
-protected:
-	std::string coordinates_;
 public:
-	GPSDevice();
-	virtual ~GPSDevice();
-	void PingLocation();
+    GPSDevice();
+    // Лаб 5, п. 3: віртуальний деструктор
+    virtual ~GPSDevice();
+    // Лаб 5, п. 4: віртуальна функція
+    virtual void PingLocation() const;
+
+protected:
+    std::string coordinates_;
 };
 
-// Клас 2: Рефрижератор (Охолодження)
+// Лаб 4, п. 4: холодильна установка
 class RefrigerationUnit {
+public:
+    RefrigerationUnit();
+    // Лаб 5, п. 3: віртуальний деструктор
+    virtual ~RefrigerationUnit();
+    // Лаб 5, п. 4: віртуальна функція
+    virtual void SetTemperature(double temp);
+
 protected:
-	double temperature_;
-public:
-	RefrigerationUnit();
-	virtual ~RefrigerationUnit();
-	void SetTemperature(double temp);
+    double temperature_;
 };
 
-// Клас 3: Авторефрижератор (Множинне наслідування від Car, GPS та Холодильника)
-class RefrigeratedTruck : public Car, public GPSDevice, public RefrigerationUnit {
+// Лаб 4, п. 4: множинне наслідування (рефрижератор)
+class RefrigeratedTruck : public Car,
+    public GPSDevice,
+    public RefrigerationUnit {
 public:
-	RefrigeratedTruck(std::string brand, std::string plate);
-	~RefrigeratedTruck() override;
+    RefrigeratedTruck(std::string brand, std::string plate, int year = 2023);
 
-	void StartColdDelivery();
+    // Лаб 5, п. 3: віртуальний деструктор
+    ~RefrigeratedTruck() override;
 
-	// [Лаб 5, П. 4] Віртуальні функції
-	void PerformWork() override { std::cout << "Рефрижератор везе заморожені продукти.\n"; }
-	void PrintType() const override { std::cout << "Тип: RefrigeratedTruck (Множинне наслідування)\n"; }
+    void StartColdDelivery();
+
+    // Лаб 5, п. 4: перевизначені віртуальні функції
+    void PerformWork() override;
+    std::string GetTypeName() const override;
+    double CalculateTripCost(double km) const override;
+    void PrintType() const override;
+    void LoadCargo(double kg) override;
+    void SetTemperature(double temp) override;
+
+    // Лаб 5, п. 7: запис і читання з файлу
+    void Write(std::ofstream& out) const override;
+    void Read(std::ifstream& in) override;
 };
 
-#endif
+#endif  // ADVANCED_VEHICLES_H_
