@@ -20,12 +20,11 @@ public:
 	bool operator<(const Cargo& other) const;   // легший за вагою
 	bool operator>(const Cargo& other) const;   // важчий за вагою
 
-	// Виведення вантажу через cout << cargo
 	friend std::ostream& operator<<(std::ostream& out, const Cargo& cargo);
 
 private:
 	std::string name_;
-	double weight_;  // вага, кг
+	double weight_;  
 };
 
 #endif  // CARGO_H_

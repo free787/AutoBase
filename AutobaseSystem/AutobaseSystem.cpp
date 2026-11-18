@@ -1,7 +1,3 @@
-// Лабораторні роботи №5 і №6 (третій рівень)
-// Варіант 21 - "Система Автобаза"
-// Демонстраційна програма
-
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -15,10 +11,12 @@
 #include "Cargo.h"
 #include "CargoPassengerVan.h"
 #include "Driver.h"
+#include "FunctorDemo.h"
 #include "Management.h"
 #include "RepairRequest.h"
 #include "Route.h"
 #include "ServiceFunctions.h"
+#include "StlDemo.h"
 #include "Trip.h"
 #include "TripStats.h"
 #include "Vehicle.h"
@@ -640,6 +638,15 @@ int main(int argc, char* argv[]) {
             << "16. Пункти 2, 3: оператори маршруту (+, -, *, =, +=, -=, *=, [])\n"
             << "17. Пункт 4: шаблонна функція\n"
             << "18. Пункти 5, 6: шаблон класу, користувацький тип\n"
+            << "--- Лабораторна 7 ---\n"
+            << "19. Пункт 1: vector, list, deque\n"
+            << "20. Пункт 1: set, multiset, map, multimap\n"
+            << "21. Пункт 1: stack, queue, priority_queue\n"
+            << "22. Пункт 2: ітератори\n"
+            << "23. Пункт 3: алгоритми\n"
+            << "24. Пункт 4.1: арифметичні функтори\n"
+            << "25. Пункт 4.2: функтори порівняння\n"
+            << "26. Пункт 4.3: логічні функтори\n"
             << "0.  Вихід\n"
             << "Ваш вибір: ";
         cin >> choice;
@@ -780,6 +787,46 @@ int main(int argc, char* argv[]) {
         }
         else if (choice == 18) {
             DemoTemplateClass();
+            Pause();
+        }
+        else if (choice == 19) {
+            // Лаб 7, п. 1: послідовні контейнери
+            DemoSequenceContainers();
+            Pause();
+        }
+        else if (choice == 20) {
+            // Лаб 7, п. 1: асоціативні контейнери
+            DemoAssociativeContainers();
+            Pause();
+        }
+        else if (choice == 21) {
+            // Лаб 7, п. 1: адаптери контейнерів
+            DemoContainerAdapters();
+            Pause();
+        }
+        else if (choice == 22) {
+            // Лаб 7, п. 2: ітератори
+            DemoIterators();
+            Pause();
+        }
+        else if (choice == 23) {
+            // Лаб 7, п. 3: алгоритми
+            DemoAlgorithms();
+            Pause();
+        }
+        else if (choice == 24) {
+            // Лаб 7, п. 4.1: арифметичні функтори
+            DemoArithmeticFunctors();
+            Pause();
+        }
+        else if (choice == 25) {
+            // Лаб 7, п. 4.2: функтори порівняння
+            DemoComparisonFunctors();
+            Pause();
+        }
+        else if (choice == 26) {
+            // Лаб 7, п. 4.3: логічні функтори
+            DemoLogicalFunctors();
             Pause();
         }
         else if (choice != 0) {
